@@ -5,6 +5,10 @@
   (scroll-bar-mode -1)
   (tooltip-mode -1))
 
+(setq custom-file (concat user-emacs-directory "/custom.el"))
+
+(setq package-check-signature nil)
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("ublt" . "https://elpa.ubolonton.org/packages/") t)
@@ -16,8 +20,8 @@
   (package-install 'use-package))
 
 
-(eval-when-compile
-  (require 'use-package))
+
+(require 'use-package)
 
 (setq gc-cons-threshold 100000000)
 
@@ -71,6 +75,8 @@
 ;; a buffer-local variable when set.
 (setq-default indent-tabs-mode nil)
 
+(setq-default js-indent-level 4)
+
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8-unix)
 
@@ -88,9 +94,8 @@
  create-lockfiles nil)
 
 (use-package recentf
+  :pin gnu
   :config
- 
-  (add-to-list 'recentf-exclude "private/tmp")
   (recentf-mode))
 
 
@@ -105,12 +110,16 @@
 (unless (boundp 'bug-reference-auto-setup-functions)
   (defvar bug-reference-auto-setup-functions '()))
 
-
+;(use-package js2-mode
+;  :ensure t
+;  :mode ("\\.js$" . js2-mode)
+;  :hook(js2-mode . js2-minor-mode))
 
 (use-package eglot
   :hook ((go-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
-         (c-mode . eglot-ensure))
+         (c-mode . eglot-ensure)
+         (js-mode . eglot-ensure))
   :bind (:map eglot-mode-map
               ("C-c a r" . #'eglot-rename)
               ("C-<down-mouse-1>" . #'xref-find-definitions)
@@ -123,7 +132,7 @@
 (use-package consult-eglot
   :bind (:map eglot-mode-map ("s-t" . #'consult-eglot-symbols)))
 
-(use-package xref
+ (use-package xref
   :pin gnu
   :bind (("s-r" . #'xref-find-references)
          ("s-[" . #'xref-go-back)
@@ -171,4 +180,3 @@
 
 
 (provide 'init)
-
