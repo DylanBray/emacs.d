@@ -89,9 +89,19 @@
 (add-hook 'text-mode-hook #'hl-line-mode)
 
 (setq
- make-backup-files nil
- auto-save-default nil
- create-lockfiles nil)
+ create-lockfiles nil
+ isearch-lazy-count t)
+
+(setq
+ backup-directory-alist `(("." . "~/.emacs.d/backups/"))
+ backup-by-copying t
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)
+
+(setq auto-save-file-name-transforms
+      `((".*" "~/.emacs.d/autosaves/" t)))
 
 (use-package recentf
   :pin gnu
@@ -119,7 +129,8 @@
   :hook ((go-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
          (c-mode . eglot-ensure)
-         (js-mode . eglot-ensure))
+         (js-mode . eglot-ensure)
+         (java-mode . eglot-ensure))
   :bind (:map eglot-mode-map
               ("C-c a r" . #'eglot-rename)
               ("C-<down-mouse-1>" . #'xref-find-definitions)
@@ -151,32 +162,61 @@
 (use-package visual-regexp
   :bind (("C-c 5" . #'vr/replace)))
 
-(use-package dap-mode
-  :bind
-  (:map dap-mode-map
-   ("C-c b b" . dap-breakpoint-toggle)
-   ("C-c b r" . dap-debug-restart)
-   ("C-c b l" . dap-debug-last)
-   ("C-c b d" . dap-debug))
-  :init
-  
-  ;; NB: dap-go-setup appears to be broken, so you have to download the extension from GH, rename its file extension
-  ;; unzip it, and copy it into the config so that the following path lines up
- 
-  (defun pt/turn-on-debugger ()
-    (interactive)
-    (dap-mode)
-    (dap-auto-configure-mode)
-    (dap-ui-mode)
-    (dap-ui-controls-mode)
-    )
-  )
-
 (bind-key "C-." #'completion-at-point)
+
+(add-to-list 'eglot-server-programs
+             `((java-mode java-ts-mode) .
+               ("/opt/jdtls/bin/jdtls"
+                :initializationOptions
+                (:bundles ["/opt/java-debug-0.52.0/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.52.0.jar"]))))
+
+(use-package dape
+ ; :preface
+  ;; By default dape shares the same keybinding prefix as `gud'
+  ;; If you do not want to use any prefix, set it to nil.
+  ;; (setq dape-key-prefix "\C-x\C-a")
+
+  :hook
+  ;; Save breakpoints on quit
+   ((kill-emacs . dape-breakpoint-save)
+  ;; Load breakpoints on startup
+    (after-init . dape-breakpoint-load))
+
+  ;:init
+  ;; To use window configuration like gud (gdb-mi)
+  ;; (setq dape-buffer-window-arrangement 'gud)
+
+   :config
+  ;; Info buffers to the right
+   (setq dape-buffer-window-arrangement 'right)
+
+  ;; Global bindings for setting breakpoints with mouse
+   (dape-breakpoint-global-mode)
+
+  ;; To not display info and/or buffers on startup
+  ;; (remove-hook 'dape-on-start-hooks 'dape-info)
+  ;; (remove-hook 'dape-on-start-hooks 'dape-repl)
+
+  ;; To display info and/or repl buffers on stopped
+  ;; (add-hook 'dape-on-stopped-hooks 'dape-info)
+  ;; (add-hook 'dape-on-stopped-hooks 'dape-repl)
+
+  ;; Kill compile buffer on build success
+  ;; (add-hook 'dape-compile-compile-hooks 'kill-buffer)
+
+  ;; Save buffers on startup, useful for interpreted languages
+  ;; (add-hook 'dape-on-start-hooks (lambda () (save-some-buffers t t)))
+
+  ;; Projectile users
+  ;; (setq dape-cwd-fn 'projectile-project-root)
+   )
+
+
 
 
 (use-package restclient
   :mode ("\\.restclient$" . restclient-mode))
 
+(use-package chess)
 
 (provide 'init)
