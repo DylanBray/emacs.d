@@ -120,11 +120,6 @@
 (unless (boundp 'bug-reference-auto-setup-functions)
   (defvar bug-reference-auto-setup-functions '()))
 
-;(use-package js2-mode
-;  :ensure t
-;  :mode ("\\.js$" . js2-mode)
-;  :hook(js2-mode . js2-minor-mode))
-
 (use-package eglot
   :hook ((go-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
@@ -211,7 +206,9 @@
   ;; (setq dape-cwd-fn 'projectile-project-root)
    )
 
-
+(use-package company
+  :config
+  (global-company-mode t))
 
 
 (use-package restclient
