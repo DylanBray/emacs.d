@@ -210,6 +210,8 @@
   :config
   (global-company-mode t))
 
+(use-package sql-indent)
+
 
 (use-package restclient
   :mode ("\\.restclient$" . restclient-mode))
