@@ -238,6 +238,12 @@
 (use-package terraform-mode)
 
 
+(use-package dockerfile-mode
+  :ensure t
+  :mode ("Dockerfile\\'" . dockerfile-mode))
+(use-package sql-indent)
+
+
 
 (use-package restclient
   :mode ("\\.restclient$" . restclient-mode))
