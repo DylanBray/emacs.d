@@ -212,12 +212,16 @@
   :config
   (global-company-mode t))
 
+<<<<<<< HEAD
 (use-package terraform-mode
   )
 
 (use-package dockerfile-mode
   :ensure t
   :mode ("Dockerfile\\'" . dockerfile-mode))
+=======
+(use-package sql-indent)
+>>>>>>> 81974b2 (sql indent)
 
 
 (use-package restclient
