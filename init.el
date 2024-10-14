@@ -145,7 +145,8 @@
          (c++-mode . eglot-ensure)
          (c-mode . eglot-ensure)
          (js-mode . eglot-ensure)
-         (java-mode . eglot-ensure))
+         (java-mode . eglot-ensure)
+         (terraform-mode . eglot-ensure))
   :bind (:map eglot-mode-map
               ("C-c a r" . #'eglot-rename)
               ("C-<down-mouse-1>" . #'xref-find-definitions)
@@ -183,7 +184,8 @@
              `((java-mode java-ts-mode) .
                ("/opt/jdtls/bin/jdtls"
                 :initializationOptions
-                (:bundles ["/opt/java-debug-0.52.0/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.52.0.jar"]))))
+                (:bundles ["/opt/java-debug-0.52.0/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.52.0.jar"])))
+             )
 
 (use-package dape
  ; :preface
@@ -230,7 +232,11 @@
   :config
   (global-company-mode t))
 
+
 (use-package sql-indent)
+
+(use-package terraform-mode)
+
 
 
 (use-package restclient
